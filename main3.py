@@ -34,7 +34,7 @@ def exchange():
                 exch_rate = data[crypto_code_result][currency_code_result]
                 crypto_name = crypta[crypto_code]
                 currency_name = curr[currency_code]
-                exch_label.config(text=f"Курс обмена:\n {exch_rate:.2f} {currency_name}\n за один {crypto_name}")
+                exch_label.config(text=f"Курс обмена: {exch_rate:.2f} {currency_name} за один {crypto_name}")
                 #mb.showinfo("Курс обмена", f"Курс: {exchange_rate1:.2f} {target_name} за один {base_name1}")
             else:
                 exch_label.config(text=f"Ошибка! Валюта {crypto_code} не найдена!")
@@ -221,28 +221,28 @@ crypta = {
 
 window = Tk()
 window.title("Курсы обмена криптовалюты")
-window.geometry("360x450")
+window.geometry("450x450")
 
 label1 = (Label(text="Валюта"))
-label1.pack(padx=10, pady=10)
+label1.grid(row=0, column=0, padx=10, pady=10)
 currency_combobox = ttk.Combobox(values=list(curr.keys()))
-currency_combobox.pack(padx=10, pady=10)
+currency_combobox.grid(row=1, column=0, padx=10, pady=10)
 currency_combobox.bind("<<ComboboxSelected>>", update_currency_label)
 currency_label = ttk.Label()
-currency_label.pack(padx=10, pady=10)
+currency_label.grid(row=2, column=0, padx=10, pady=10)
 
-Label(text="Криптовалюта").pack(padx=10, pady=10)
+Label(text="Криптовалюта").grid(row=0, column=1, padx=10, pady=10)
 
 crypto_combobox = ttk.Combobox(values=list(crypta.keys()))
-crypto_combobox.pack(padx=10, pady=10)
+crypto_combobox.grid(row=1, column=1, padx=10, pady=10)
 crypto_combobox.bind("<<ComboboxSelected>>", update_crypto_label)
 
 crypto_label = ttk.Label()
-crypto_label.pack(padx=10, pady=10)
+crypto_label.grid(row=2, column=1, padx=10, pady=10)
 
 exch_label = ttk.Label()
-exch_label.pack(padx=10, pady=10)
+exch_label.grid(row=3, column=1, padx=10, pady=10)
 
-Button(text="Получить курс обмена", command=exchange).pack(padx=10, pady=10)
+Button(text="Получить курс обмена", command=exchange).grid(row=4, column=0, padx=10, pady=10)
 
 window.mainloop()
