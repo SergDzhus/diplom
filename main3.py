@@ -3,6 +3,31 @@ import requests
 import json
 from  tkinter import messagebox as mb
 from tkinter import ttk
+from datetime import datetime
+
+
+def clock():
+    today = datetime.today()
+    time = today.strftime("%H:%M")
+    date = today.strftime("%d-%m-%Y")
+    day = today.strftime("%A")
+    match day:
+        case "Sunday":
+            day = "Воскресенье"
+        case "Monday":
+            day = "Понедельник"
+        case "Tuesday":
+            day = "Вторник"
+        case "Wednesday":
+            day = "Среда"
+        case "Thursday":
+            day = "Четверг"
+        case "Friday":
+            day = "Пятница"
+        case "Saturday":
+            day = "Суббота"
+    time_label.config(text=f"Текущее время:{time} {day} {date}")
+    time_label.after(1000,clock)
 
 
 def update_currency_label(event):
@@ -16,7 +41,7 @@ def update_crypto_label(event):
     name = crypta[code]
     crypto_label.config(text=name)
 
-def exchange():
+def exchange1():
     crypto_code = crypto_combobox.get()
     currency_code = currency_combobox.get()
     crypto_code_result = crypto_code.lower()
@@ -34,8 +59,8 @@ def exchange():
                 exch_rate = data[crypto_code_result][currency_code_result]
                 crypto_name = crypta[crypto_code]
                 currency_name = curr[currency_code]
-                exch_label.config(text=f"Курс обмена: {exch_rate:.2f} {currency_name} за один {crypto_name}")
-                #mb.showinfo("Курс обмена", f"Курс: {exchange_rate1:.2f} {target_name} за один {base_name1}")
+                exch_label.config(text=f"Курс обмена ON: {exch_rate:.4f} {currency_name} за один {crypto_name}")
+                #mb.showinfo("Курс обмена", f"Курс: {exch_rate:.4f} {currency_name} за один {crypto_name}")
             else:
                 exch_label.config(text=f"Ошибка! Валюта {crypto_code} не найдена!")
                 #mb.showerror("Ошибка!", f"Валюта {target_code} не найдена!")
@@ -43,6 +68,37 @@ def exchange():
             mb.showerror("Ошибка!", f"Произошла ошибка: {e}!")
     else:
         mb.showwarning("Внимание!", "Введите код валюты!")
+
+
+def exchange2():
+    crypto_code = crypto_combobox.get()
+    currency_code = currency_combobox.get()
+    crypto_code_result = crypto_code.lower()
+    currency_code_result = currency_code.lower()
+    exch_rate = 0
+    if crypto_code and currency_code:
+        try:
+            headers = {'accept': 'application/json'}
+            response = requests.get(f"https://api.coingecko.com/api/v3/simple/price?ids={crypto_code_result}&vs_currencies={currency_code_result}", headers=headers)
+            response.raise_for_status()
+            #data = response.json()
+            data = json.loads(response.text)
+            price = data[crypto_code.lower()][currency_code.lower()]
+            if crypto_code_result in data:
+                exch_rate = data[crypto_code_result][currency_code_result]
+                crypto_name = crypta[crypto_code]
+                currency_name = curr[currency_code]
+                back_to_currency = 1/exch_rate
+                exch_ago_label.config(text=f"Курс обмена AGO: {back_to_currency:.4f} {crypto_name} за один {currency_name}")
+                #mb.showinfo("Курс обмена", f"Курс: {back_to_currency:.4f} {crypto_name} за один {currency_name}")
+            else:
+                exch_label.config(text=f"Ошибка! Валюта {crypto_code} не найдена!")
+                #mb.showerror("Ошибка!", f"Валюта {target_code} не найдена!")
+        except Exception as e:
+            mb.showerror("Ошибка!", f"Произошла ошибка: {e}!")
+    else:
+        mb.showwarning("Внимание!", "Введите код валюты!")
+
 
 
 curr = {
@@ -214,35 +270,45 @@ crypta = {
     "Bitcoin": "Биткоин",
     "Litecoin": "Лайткоин",
     "Ethereum": "Эфириум",
-    "Ethereum-Classic": "Эфириум классический",
+    "Ethereum-Classic": "Эфириум классик",
     "Ripple": "XRP",
     "Cardano": "ADA"
 }
 
+
 window = Tk()
 window.title("Курсы обмена криптовалюты")
-window.geometry("450x450")
+window.iconbitmap(default="bablo.ico")
+window.geometry("350x300")
 
+time_label = ttk.Label()
+time_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+clock()
 label1 = (Label(text="Валюта"))
-label1.grid(row=0, column=0, padx=10, pady=10)
+label1.grid(row=1, column=0, padx=10, pady=10)
 currency_combobox = ttk.Combobox(values=list(curr.keys()))
-currency_combobox.grid(row=1, column=0, padx=10, pady=10)
+currency_combobox.grid(row=2, column=0, padx=17, pady=10)
 currency_combobox.bind("<<ComboboxSelected>>", update_currency_label)
 currency_label = ttk.Label()
-currency_label.grid(row=2, column=0, padx=10, pady=10)
+currency_label.grid(row=3, column=0, padx=10, pady=10)
 
-Label(text="Криптовалюта").grid(row=0, column=1, padx=10, pady=10)
+Label(text="Криптовалюта").grid(row=1, column=1, padx=10, pady=10)
 
 crypto_combobox = ttk.Combobox(values=list(crypta.keys()))
-crypto_combobox.grid(row=1, column=1, padx=10, pady=10)
+crypto_combobox.grid(row=2, column=1, padx=10, pady=10)
 crypto_combobox.bind("<<ComboboxSelected>>", update_crypto_label)
 
 crypto_label = ttk.Label()
-crypto_label.grid(row=2, column=1, padx=10, pady=10)
+crypto_label.grid(row=3, column=1, padx=10, pady=10)
 
 exch_label = ttk.Label()
-exch_label.grid(row=3, column=1, padx=10, pady=10)
+exch_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
-Button(text="Получить курс обмена", command=exchange).grid(row=4, column=0, padx=10, pady=10)
+exch_ago_label = ttk.Label()
+exch_ago_label.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+
+Button(text="Курс обмена ON", command=exchange1).grid(row=6, column=0, padx=10, pady=10)
+
+Button(text="Курс обмена AGO", command=exchange2).grid(row=6, column=1, padx=10, pady=10)
 
 window.mainloop()
