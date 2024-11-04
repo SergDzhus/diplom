@@ -27,7 +27,7 @@ def clock():
         case "Saturday":
             day = "Суббота"
     time_label.config(text=f"Текущее время:{time} {day} {date}")
-    time_label.after(1000,clock)
+    time_label.after(1000, clock)
 
 
 def update_currency_label(event):
@@ -46,7 +46,7 @@ def exchange1():
     currency_code = currency_combobox.get()
     crypto_code_result = crypto_code.lower()
     currency_code_result = currency_code.lower()
-    exch_rate = 0
+    #exch_rate = 0
     if crypto_code and currency_code:
         try:
             headers = {'accept': 'application/json'}
@@ -54,7 +54,7 @@ def exchange1():
             response.raise_for_status()
             #data = response.json()
             data = json.loads(response.text)
-            price = data[crypto_code.lower()][currency_code.lower()]
+            #price = data[crypto_code.lower()][currency_code.lower()]
             if crypto_code_result in data:
                 exch_rate = data[crypto_code_result][currency_code_result]
                 crypto_name = crypta[crypto_code]
@@ -75,7 +75,7 @@ def exchange2():
     currency_code = currency_combobox.get()
     crypto_code_result = crypto_code.lower()
     currency_code_result = currency_code.lower()
-    exch_rate = 0
+    #exch_rate = 0
     if crypto_code and currency_code:
         try:
             headers = {'accept': 'application/json'}
@@ -83,7 +83,7 @@ def exchange2():
             response.raise_for_status()
             #data = response.json()
             data = json.loads(response.text)
-            price = data[crypto_code.lower()][currency_code.lower()]
+            #price = data[crypto_code.lower()][currency_code.lower()]
             if crypto_code_result in data:
                 exch_rate = data[crypto_code_result][currency_code_result]
                 crypto_name = crypta[crypto_code]
@@ -286,7 +286,7 @@ time_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 clock()
 label1 = (Label(text="Валюта"))
 label1.grid(row=1, column=0, padx=10, pady=10)
-currency_combobox = ttk.Combobox(values=list(curr.keys()))
+currency_combobox = ttk.Combobox(state="readonly", values=list(curr.keys()))
 currency_combobox.grid(row=2, column=0, padx=17, pady=10)
 currency_combobox.bind("<<ComboboxSelected>>", update_currency_label)
 currency_label = ttk.Label()
