@@ -279,7 +279,7 @@ crypta = {
 window = Tk()
 window.title("Курсы обмена криптовалюты")
 window.iconbitmap(default="bablo.ico")
-window.geometry("350x300")
+window.geometry("")
 
 time_label = ttk.Label()
 time_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
